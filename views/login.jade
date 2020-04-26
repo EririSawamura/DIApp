@@ -1,0 +1,19 @@
+extends layout
+block content
+  div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
+    h4.display-2(style='margin: auto; text-align: center; padding-bottom: 40px') Login
+    form.px-4.py-3(method='post', style='padding-top: 100px')
+      .form-group
+        label(for='username') Username: 
+        input#usr.form-control(type='text', name='username', placeholder='username', required='')
+        small#usrHelp.form-text.text-muted We'll never share your user name with anyone else.
+      .form-group
+        label(for='pwd') Password: 
+        input#pwd.form-control(type='password', name='pwd', placeholder='password', required='')
+      .form-group
+        input.form-control(type='submit', name='submit', value='submit')
+      .form-group
+        input.btn.btn-primary(type='reset', name='reset', value='reset', style='left: 0')
+        input.btn.btn-primary(type='button', value='New user?', onclick="window.location='register';")
+
+  

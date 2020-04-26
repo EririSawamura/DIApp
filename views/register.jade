@@ -1,0 +1,27 @@
+extends layout
+block content
+  div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
+    h4.display-2(style='margin: auto; text-align: center; padding-bottom: 40px') Registration
+    form.px-4.py-3(method='post', style='padding-top: 100px')
+      .form-group
+        label(for='username') Username: 
+        input#usr.form-control(type='text', name='username', placeholder='username', required='')
+      .form-group
+        label(for='first_name') First name: 
+        input#first_name.form-control(type='text', name='first_name', placeholder='first name', required='')
+      .form-group
+        label(for='last_name') Last name:
+        | : 
+        input#last_name.form-control(type='text', name='last_name', placeholder='last name', required='')
+        small#usrHelp.form-text.text-muted We'll never share your name with anyone else.
+      .form-group
+        label(for='pwd') Password: 
+        input#pwd.form-control(type='password', name='pwd', placeholder='password', required='')
+      .form-group
+        label(for='conf_pwd') Confirm Password: 
+        input#conf_pwd.form-control(type='password', name='conf_pwd', placeholder='Confirm your password', required='')
+      .form-group
+        input.form-control(type='submit', name='submit', value='submit', onclick='return validate()')
+      .form-group
+        input.btn.btn-primary(type='reset', name='reset', value='reset', style='left: 0')
+        input.btn.btn-primary(type='button', value='Cancel', onclick="window.location='login';")
