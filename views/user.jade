@@ -1,10 +1,11 @@
 extends layout
 block content
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
-    h4.display-2(style='margin: auto; text-align: center; padding-bottom: 40px') Welcome new user!
+    h4.display-3(style='margin: auto; text-align: center; padding-bottom: 40px')= username
+
     form.px-4.py-3(method='post', style='padding-top: 100px')
       .form-group(style='align-items: center; justify-content:center; display: flex')
-        input#new_note.btn.btn-primary(style='display: flex; margin-right: 20px', type='submit', name='new_note', value='New note')
+        input#new_note.btn.btn-primary(style='display: flex; margin-right: 20px', type='submit', name='new key', value='New note')
         input#logout.btn.btn-danger(style='display: flex', type='submit', name='logout', value='Logout')
 
     

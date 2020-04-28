@@ -2,6 +2,9 @@ extends layout
 block content
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
     h4.display-2(style='margin: auto; text-align: center; padding-bottom: 40px') Registration
+    .alert.alert-warning.alert-dismissible.fade.show(role='alert', style=hidden)
+      strong Error!
+      |  You user name has been registered. Please try another one.
     form.px-4.py-3(method='post', style='padding-top: 100px')
       .form-group
         label(for='username') Username: 
