@@ -1,0 +1,41 @@
+extends layout
+block content
+  div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
+    h4.display-3(style='margin: auto; text-align: center; padding-bottom: 40px') New key
+    form.px-4.py-3(action='php/create_note.php', method='post', style='padding-top: 100px')
+      .input-group.mb-3
+        .input-group-prepend
+          span#basic-addon3.input-group-text Username
+        input#title.form-control(type='text', maxlength='45', name='title', required='')
+      .input-group.mb-3
+        .input-group-prepend
+          span#basic-addon3.input-group-text Password
+        input#title.form-control(type='password', maxlength='45', name='title', required='')
+      .form-check
+        input#if_private.form-check-input(type='checkbox', name='if_private', checked='')
+        label.form-check-label(for='if_private') Set note private
+      #password.form-group
+        label(for='pwd') Password: 
+        input#pwd.form-control(type='password', name='pwd', placeholder='password', required='')
+      #con_password.form-group
+        label(for='conf_pwd') Confirm Password: 
+        input#conf_pwd.form-control(type='password', name='conf_pwd', placeholder='Confirm your password')
+      .form-group(style='padding-top:20px;')
+        input.form-control(type='submit', name='submit', value='submit', onclick='return validate()')
+      .form-group(style='padding-top: 20px')
+        input.btn.btn-primary(type='reset', name='reset', value='reset', style='left: 0')
+        input.btn.btn-primary(type='button', value='Cancel', onclick="window.location='/user';")
+  script.
+    $(document).ready(function(){
+      $('#if_private').change(function(){
+        if(this.checked){
+          $('#password').fadeIn('slow');
+          $('#con_password').fadeIn('slow');
+        }
+        else{
+          $('#password').fadeOut('slow');
+          $('#con_password').fadeOut('slow');
+        }
+      });
+    });
+
