@@ -24,11 +24,13 @@ html
       };
     
       function validate() {
-        let password = document.getElementById("pwd").value;
-        let conf_password = document.getElementById("conf_pwd").value;
-        if (password !== conf_password){
-          alert("Password and the confirmed password are not the same!");
-          return false;
+        let password = document.getElementById("pwd");
+        let conf_password = document.getElementById("conf_pwd");
+        if(password && conf_password){
+          if (password.value !== conf_password.value){
+            alert("Password and the confirmed password are not the same!");
+            return false;
+          }
         }
         return true;
       }

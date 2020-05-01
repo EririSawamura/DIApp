@@ -2,12 +2,18 @@ extends layout
 block content
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
     h4.display-3(style='margin: auto; text-align: center; padding-bottom: 40px')= username
+    .alert.alert-success(role='alert', style=create_key_hidden)
+      strong Success Creation!
+      |  You can view your key pairs now.
     script.
       var key_list = !{JSON.stringify(result)};
+      console.log(key_list);
       for (var i=0; i<key_list.length; i+=1){
-        document.write("<li class='list-group-item'><input class='btn btn-link' style='display: flex; margin-right: 20px' type='button' onClick=\"location.href='view?key_id="+key_list[i].key_id+"'\" name=key_id:"+key_list[i].key_id+" id="+key_list[i].key_id+" value=\""+key_list[i].USERNAME+"\"></li>");
+        var lock = key_list[i].if_private? '🔒': '';
+        document.write("<li class='list-group-item'><input class='btn btn-link' style='display: flex; margin-right: 20px' type='button' onClick=\"location.href='/user/view?key_id="+key_list[i].key_id+"'\" name=key_id:"+key_list[i].key_id+" id="+key_list[i].key_id+" value=\""+key_list[i].USERNAME+"  "+lock+"\"></li>");
       }
     form.px-4.py-3(method='post', style='padding-top: 100px')
+      p#usrHelp.form-text.text-muted 🔒 means your note is private now.
       .form-group(style='align-items: center; justify-content:center; display: flex')
         input#new_note.btn.btn-primary(style='display: flex; margin-right: 20px', type='submit', name='new key', value='New key pair')
         input#logout.btn.btn-danger(style='display: flex', type='submit', name='logout', value='Logout')

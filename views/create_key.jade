@@ -2,24 +2,24 @@ extends layout
 block content
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
     h4.display-3(style='margin: auto; text-align: center; padding-bottom: 40px') New key
-    form.px-4.py-3(action='php/create_note.php', method='post', style='padding-top: 100px')
+    form.px-4.py-3(name='form' method='post', style='padding-top: 100px' novalidate)
       .input-group.mb-3
         .input-group-prepend
           span#basic-addon3.input-group-text Username
-        input#title.form-control(type='text', maxlength='45', name='title', required='')
+        input#username.form-control(type='text', maxlength='45', name='username', required='')
       .input-group.mb-3
         .input-group-prepend
           span#basic-addon3.input-group-text Password
-        input#title.form-control(type='password', maxlength='45', name='title', required='')
+        input#user_password.form-control(type='password', maxlength='45', name='user_password', required='')
       .form-check
         input#if_private.form-check-input(type='checkbox', name='if_private', checked='')
         label.form-check-label(for='if_private') Set note private
       #password.form-group
-        label(for='pwd') Password: 
-        input#pwd.form-control(type='password', name='pwd', placeholder='password', required='')
+        label(for='pwd') Decryption password: 
+        input#pwd.form-control(type='password', name='pwd', placeholder='Password' value='', required='')
       #con_password.form-group
-        label(for='conf_pwd') Confirm Password: 
-        input#conf_pwd.form-control(type='password', name='conf_pwd', placeholder='Confirm your password')
+        label(for='conf_pwd') Confirm decryption password: 
+        input#conf_pwd.form-control(type='password', name='conf_pwd', placeholder='Confirm your password', value='', required='')
       .form-group(style='padding-top:20px;')
         input.form-control(type='submit', name='submit', value='submit', onclick='return validate()')
       .form-group(style='padding-top: 20px')

@@ -1,0 +1,18 @@
+extends layout
+block content
+	div(style='align-content: center; align-items: center; justify-content: center; width: 700px; height: 1080px; padding-top: 100px; margin: auto')
+		h4(style='margin: auto; text-align: center; padding-bottom: 40px')= username
+		p(style='color:red;')= alert
+		p.display-5(style='margin: auto; text-align:justify; padding-bottom: 40px; height: 600px')= password
+		div(style=if_private)
+			form.px-4.py-3(method='post', style='padding-top: 100px')
+				.input-group.mb-3(style='margin-bottom: 20px')
+					input#decrypt.form-control(type='password', placeholder='Enter decryption password', name='decrypt', aria-label='decrypt', aria-describedby='basic-addon2', required='')
+					.input-group-append
+					button.btn.btn-outline-secondary(type='submit') Submit
+		form.px-4.py-3( style='padding-top: 100px; margin: auto; align-content: center; align-items: center; justify-content: center; margin: auto; display: flex')
+			.form-group(style='align-items: center; justify-content:center; display: flex')
+				input#new_note.btn.btn-primary(style='display: flex;', type='button', name='new_key', value='New key', onclick="window.location='/user/create_key';")
+				input.btn.btn-primary(type='button', style='margin: auto; display: flex; margin-left:20px', value='Come back', onclick="window.location='/login';")
+
+
