@@ -8,7 +8,7 @@ block content
     .alert.alert-success(role='alert', style=reg_hidden)
       strong Success Registration!
       |  Please login to use DIApp.
-    form.px-4.py-3(method='post', style='padding-top: 100px')
+    form#my_captcha_form.px-4.py-3(method='post', style='padding-top: 100px', name='my_captcha_form')
       .form-group
         label(for='username') Username: 
         input#usr.form-control(type='text', name='username', placeholder='username', required='')
@@ -21,5 +21,19 @@ block content
       .form-group
         input.btn.btn-primary(type='reset', name='reset', value='reset', style='left: 0')
         input.btn.btn-primary(style='margin-left: 20px', type='button', value='New user?', onclick="window.location='register';")
+      .g-recaptcha(data-sitekey='6LfCufYUAAAAAMLrtvdHqxPdCijjHWImzHuolp8o')
 
+  script(src='https://www.google.com/recaptcha/api.js', async='', defer='')
+  script.
+    document.getElementById("my_captcha_form").addEventListener("submit",function(evt){
+      var response = grecaptcha.getResponse();
+      if(response.length == 0){
+        //reCaptcha not verified
+        alert("please verify that you are not a robot!");
+        evt.preventDefault();
+        return false;
+      }
+      //captcha verified
+      //do the rest of your validations here
+    });
   

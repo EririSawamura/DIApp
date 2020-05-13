@@ -10,6 +10,9 @@ var connection = mysql.createConnection({
   password: 'password',
   database: 'users'
 });
+var Recaptcha = require('express-recaptcha').RecaptchaV3;
+//import Recaptcha from 'express-recaptcha'
+var recaptcha = new Recaptcha('6LfCufYUAAAAAMLrtvdHqxPdCijjHWImzHuolp8o', '6LfCufYUAAAAAHyku1y7fnmZZFC9T5eUDtRoaQVP');
 
 connection.connect();
 
@@ -43,16 +46,21 @@ router.get('/register', function (req, res) {
   }
 });
 
-router.post('/login', function (req, res) {
-  login(req, function(result){
-    if(result){
-      console.log(result);
-      res.cookie('username', req.body.username, {expire: 360000 + Date.now()});
-      res.redirect("/user");
-    } else{
-      res.redirect("/login?valid=false");
-    }
-  });
+router.post('/login', recaptcha.middleware.verify, function (req, res) {
+  if (!req.recaptcha.error) {
+    login(req, function(result){
+      if(result){
+        console.log(result);
+        res.cookie('username', req.body.username, {expire: 360000 + Date.now()});
+        res.redirect("/user");
+      } else{
+        res.redirect("/login?valid=false");
+      }
+    });
+  } else {
+    console.log(req.recaptcha.error);
+    res.redirect("/login?valid=false");
+  }
 });
 router.post('/register', function (req, res) {
   register(req, function(result){
