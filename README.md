@@ -8,6 +8,7 @@ Need express js, node js, vue.js
 To start app, use 
 "npm start"
 "npm install bcrypt"
+"npm install express-recaptcha --save"
 
 In Mysql, you need to set
 SET @@session.block_encryption_mode="aes-128-cbc";
