@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 var express = require('express');
 var router = express.Router();
 var date = new Date();
@@ -15,8 +16,10 @@ router.get('/', function(req, res, next) {
   if(req.cookies['username']){
     var msg = genWelmsg(req.cookies['username']);
     var create_key_hidden = req.query.create_key === "success"? "display:block": "display:none";
+    var delete_key_hidden = req.query.delete_key === "success"? "display:block": "display:none";
+    var change_key_hidden = req.query.change_key === "success"? "display:block": "display:none";
     genPwdlist(req.cookies['username'], function(result){
-      res.render('user', { title: 'User', username: msg, result: result, create_key_hidden: create_key_hidden});
+      res.render('user', { title: 'User', username: msg, result: result, create_key_hidden: create_key_hidden, delete_key_hidden: delete_key_hidden, change_key_hidden, change_key_hidden});
     });
   } else{
     res.redirect('/login');
@@ -45,6 +48,40 @@ router.get('/view', function(req, res, next){
         if_private: if_private,
         alert: alert});
     });
+  } else{
+    res.redirect('/login');
+  }
+});
+router.get('/verify', function(req, res, next){
+  
+  if(req.cookies['username']){
+    var key_id = req.query.key_id;
+    console.log(key_id);
+    getView(key_id, function(result){
+      console.log(result[0]);
+      console.log(result[0].USERNAME);
+      if(result[0].IF_PRIVATE){
+        var valid_hidden = req.query.valid === "fail"? "display:block": "display:none";
+        res.render('verify', { title: 'Verify', valid_hidden: valid_hidden});
+      } else{
+        res.render('change', { title: 'Change'});
+      }
+    });
+  } else{
+    res.redirect('/login');
+  }
+});
+router.get('/change', function(req, res, next) {
+  if(req.cookies['username']){
+    res.render('change', {title: 'Change'});
+  } else{
+    res.redirect('/login');
+  }
+});
+router.get('/delete', function(req, res, next) {
+  if(req.cookies['username']){
+    var valid_hidden = req.query.valid === "fail"? "display:block": "display:none";
+    res.render('delete', { title: 'Delete', valid_hidden: valid_hidden});
   } else{
     res.redirect('/login');
   }
@@ -90,6 +127,50 @@ router.post('/view', function(req, res, next){
         password: result[0].PASSWORD, 
         if_private: if_private,
         alert: alert});
+    });
+  } else{
+    res.redirect('/login');
+  }
+});
+router.post('/verify', function(req, res, next){
+  if(req.cookies['username']){
+    var key_id = req.query.key_id;
+    console.log(key_id);
+    getDecryView(key_id, req, function(result){
+      if(result[0].PASSWORD === null){
+        res.redirect("/user/verify?key_id="+key_id+"&valid=fail");
+      } else{
+        res.redirect("/user/change?key_id="+key_id);
+      }
+    });
+  } else{
+    res.redirect('/login');
+  }
+});
+router.post('/change', function(req, res, next){
+  if(req.cookies['username']){
+    var key_id = req.query.key_id;
+    change_key(key_id, req, req.cookies['username'], function(result){
+      if(result){
+        res.redirect("/user?change_key=success");
+      } else{
+        res.redirect("/user?change_key=fail");
+      }
+    });
+  } else{
+    res.redirect('/login');
+  }
+});
+router.post('/delete', function(req, res, next){
+  if(req.cookies['username']){
+    var key_id = req.query.key_id;
+    console.log(key_id);
+    delete_key(key_id, req.cookies['username'], req, function(result){
+      if(result){
+        res.redirect("/user?delete_key=success");
+      } else{
+        res.redirect("/user/delete?key_id="+key_id+"&valid=fail");
+      }
     });
   } else{
     res.redirect('/login');
@@ -185,5 +266,76 @@ function create_key(req, username, callback){
       }
     );
   }
+}
+
+function change_key(id, req, username, callback){
+  if(req.body.if_private === 'on'){
+    console.log("private");
+    var key_sql = "UPDATE key_store SET username=?, password=TO_BASE64(AES_ENCRYPT(?,?, @init_vector)), if_private=1, LAST_MODIFIED_TIME=now() WHERE key_id=?;"
+    connection.query(
+      key_sql,[
+        req.body.username,
+        req.body.user_password,
+        req.body.pwd,
+        id
+      ],
+      function (err) {
+        if (err) throw err;
+      
+        return callback(true);
+      }
+    );
+  }else{
+    var key_sql = "UPDATE key_store SET username=?, password=?, if_private=0, LAST_MODIFIED_TIME=now() WHERE key_id=?;"
+    connection.query(
+      key_sql,[
+        req.body.username,
+        req.body.user_password,
+        id
+      ],
+      function (err) {
+        if (err) throw err;
+      
+        return callback(true);
+      }
+    );
+  }
+}
+
+function delete_key(id, username, req, callback){
+  var pw_sql = "SELECT password FROM user WHERE username = ?";
+  var key_sql = "DELETE FROM key_store WHERE key_id = ?;"
+  connection.query(
+    pw_sql,[
+      username
+    ],
+    function (err, rows) {
+      if (err) throw err;
+      
+      if(rows.length === 1){
+        console.log(req.body.pwd)
+        bcrypt.compare(req.body.pwd, rows[0].password, function(err, result) {
+          if(err) throw err;
+          if(result){
+            connection.query(
+              key_sql,[
+                id
+              ],
+              function (err) {
+                if (err) throw err;
+              
+                return callback(true);
+              }
+            );
+          } else{
+            return callback(false);
+          }
+        });
+      }
+      else{
+        return callback(false);
+      }
+    }
+  );
 }
 module.exports = router;

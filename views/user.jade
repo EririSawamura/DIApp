@@ -6,16 +6,22 @@ block content
       strong Success Creation!
       |  You can view your key pairs now.
     script.
+    .alert.alert-success(role='alert', style=delete_key_hidden)
+      strong Delete Successfully!
+    script.
+    .alert.alert-success(role='alert', style=change_key_hidden)
+      strong Change Successfully!
+    script.
       var key_list = !{JSON.stringify(result)};
       console.log(key_list);
       for (var i=0; i<key_list.length; i+=1){
         var lock = key_list[i].if_private? '🔒': '';
-        document.write("<li class='list-group-item'><input class='btn btn-link' style='display: flex; margin-right: 20px' type='button' onClick=\"location.href='/user/view?key_id="+key_list[i].key_id+"'\" name=key_id:"+key_list[i].key_id+" id="+key_list[i].key_id+" value=\""+key_list[i].USERNAME+"  "+lock+"\"></li>");
+        document.write("<li class='list-group-item' style='height: 50px;'><input class='btn btn-link' style='display: flex; margin-right: 20px; float: left' type='button' onClick=\"location.href='/user/view?key_id="+key_list[i].key_id+"'\" name=key_id:"+key_list[i].key_id+" id="+key_list[i].key_id+" value=\""+key_list[i].USERNAME+"  "+lock+"\"><input class='btn btn-danger' style='display: flex; width: 70px; height: 35px; float: right' value='Delete' type='button' onClick=\"location.href='/user/delete?key_id="+key_list[i].key_id+"'\"><input class='btn btn-warning' style='display: flex; width: 80px; height: 35px; margin-right: 10px; float: right' value='Change' type='button' onClick=\"location.href='/user/verify?key_id="+key_list[i].key_id+"'\"></li>");
       }
     form.px-4.py-3(method='post', style='padding-top: 100px')
       p#usrHelp.form-text.text-muted 🔒 means your note is private now.
       .form-group(style='align-items: center; justify-content:center; display: flex')
-        input#new_note.btn.btn-primary(style='display: flex; margin-right: 20px', type='submit', name='new key', value='New key pair')
+        input#new_note.btn.btn-primary(style='display: flex; margin-right: 20px', type='submit', name='new key', value='New Key Pair')
         input#logout.btn.btn-danger(style='display: flex', type='submit', name='logout', value='Logout')
 
     

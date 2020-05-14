@@ -1,0 +1,17 @@
+extends layout
+block content
+  div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
+    h4.display-2(style='margin: auto; text-align: center; padding-bottom: 40px') Delete
+    .alert.alert-danger(role='alert', style=valid_hidden)
+      strong Error!
+      |  Your password is wrong. Please try again.
+    form.px-4.py-3(method='post', style='padding-top: 100px')
+      .form-group
+        label(for='pwd') Password: 
+        input#pwd.form-control(type='password', name='pwd', placeholder='password', required='')
+      .form-group
+        input.form-control(type='submit', name='submit', value='Submit')
+      .form-group
+        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0')
+        input.btn.btn-primary(style='margin-left: 20px', type='button', value='Cancel', onclick="window.location='/user';")
+  
