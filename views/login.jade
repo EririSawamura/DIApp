@@ -16,12 +16,12 @@ block content
       .form-group
         label(for='pwd') Password: 
         input#pwd.form-control(type='password', name='pwd', placeholder='password', required='')
-      .form-group
-        input.form-control(type='submit', name='submit', value='submit')
-      .form-group
-        input.btn.btn-primary(type='reset', name='reset', value='reset', style='left: 0')
-        input.btn.btn-primary(style='margin-left: 20px', type='button', value='New user?', onclick="window.location='register';")
       .g-recaptcha(data-sitekey='6LfCufYUAAAAAMLrtvdHqxPdCijjHWImzHuolp8o')
+      .form-group
+        input.form-control(type='submit', name='submit', value='Submit')
+      .form-group
+        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0')
+        input.btn.btn-primary(style='margin-left: 20px', type='button', value='New User?', onclick="window.location='register';")
 
   script(src='https://www.google.com/recaptcha/api.js', async='', defer='')
   script.
@@ -29,7 +29,7 @@ block content
       var response = grecaptcha.getResponse();
       if(response.length == 0){
         //reCaptcha not verified
-        alert("please verify that you are not a robot!");
+        alert("Please verify that you are not a robot!");
         evt.preventDefault();
         return false;
       }
