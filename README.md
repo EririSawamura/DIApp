@@ -9,6 +9,7 @@ To start app, use
 "npm start"
 "npm install bcrypt"
 "npm install express-recaptcha --save"
+"npm install --save qrcode"
 
 In Mysql, you need to set
 SET @@session.block_encryption_mode="aes-128-cbc";

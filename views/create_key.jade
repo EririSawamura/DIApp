@@ -15,7 +15,11 @@ block content
     form.px-4.py-3(name='form' method='post', style='padding-top: 100px' novalidate)
       .input-group.mb-3
         .input-group-prepend
-          span#basic-addon3.input-group-text Title 
+          span#basic-addon3.input-group-text Sitename
+        input#sitename.form-control(type='text', maxlength='45', name='sitename', required='')
+      .input-group.mb-3
+        .input-group-prepend
+          span#basic-addon3.input-group-text Title
         input#username.form-control(type='text', maxlength='45', name='username', required='')
       .input-group.mb-3
         .input-group-prepend
