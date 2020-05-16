@@ -1,41 +1,74 @@
 extends layout
 block content
+  style(type='text/css').
+    #submit {
+      cursor: pointer;
+    }
+
+    #submit:hover {
+      background-color: #4CAF50; /* Green */
+      color: white;
+    }
+
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
     h4.display-3(style='margin: auto; text-align: center; padding-bottom: 40px') New key
     form.px-4.py-3(name='form' method='post', style='padding-top: 100px' novalidate)
       .input-group.mb-3
         .input-group-prepend
-          span#basic-addon3.input-group-text Username
+          span#basic-addon3.input-group-text Title 
         input#username.form-control(type='text', maxlength='45', name='username', required='')
       .input-group.mb-3
         .input-group-prepend
-          span#basic-addon3.input-group-text Password
-        input#user_password.form-control(type='password', maxlength='45', name='user_password', required='')
+          span#basic-addon3.input-group-text Content
+        input#user_password.form-control(type='text', maxlength='45', name='user_password', required='')
       .form-check
         input#if_private.form-check-input(type='checkbox', name='if_private', checked='')
-        label.form-check-label(for='if_private') Set note private
-      #password.form-group
-        label(for='pwd') Decryption password: 
-        input#pwd.form-control(type='password', name='pwd', placeholder='Password' value='', required='')
-      #con_password.form-group
-        label(for='conf_pwd') Confirm decryption password: 
-        input#conf_pwd.form-control(type='password', name='conf_pwd', placeholder='Confirm your password', value='', required='')
-      .form-group(style='padding-top:20px;')
-        input.form-control(type='submit', name='submit', value='Submit', onclick='return validate()')
-      .form-group(style='padding-top: 20px')
-        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0')
-        input.btn.btn-primary(style='margin-left: 20px', type='button', value='Cancel', onclick="window.location='/user';")
+        label.form-check-label(for='if_private') Set content private
+      
+      #encryption.row(style='padding-top:10px;')
+        .col-4
+          #list-tab.list-group(role='tablist')
+            a#list-password-list.list-group-item.list-group-item-action.active(data-toggle='list', href='#list-password', role='tab', aria-controls='password') Password
+            a#list-profile-list.list-group-item.list-group-item-action(data-toggle='list', href='#list-profile', role='tab', aria-controls='profile') QR code
+        .col-8
+          #nav-tabContent.tab-content
+            #list-password.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='list-password-list')
+              #password.form-group(style='padding-top:5px;')
+                label(for='pwd', style='width:43%') Decrypted password:
+                input#pwd(type='password', name='pwd', placeholder='Password', value='', required='', style='width:45%')
+              #con_password.form-group
+                label(for='conf_pwd', style='width:43%') Confirmed password:
+                input#conf_pwd(type='password', name='conf_pwd', placeholder='Password', value='', required='', oninput='cmp()', style='width:45%')
+                font#compare_result(style='margin-left:15px')
+            #list-profile.tab-pane.fade(role='tabpanel', aria-labelledby='list-profile-list') ...
+
+
+      .form-group(style='padding-top:10px;')
+        input.form-control(type='submit', name='submit', value='Submit', id='submit', onclick='return validate()')
+      .form-group
+        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0; width: 45%')
+        input.btn.btn-primary(style='margin-left: 10%; width: 45%', type='button', value='Cancel', onclick="window.location='/user';")
+  
   script.
     $(document).ready(function(){
       $('#if_private').change(function(){
         if(this.checked){
-          $('#password').fadeIn('slow');
-          $('#con_password').fadeIn('slow');
+          $('#encryption').fadeIn('slow');
         }
         else{
-          $('#password').fadeOut('slow');
-          $('#con_password').fadeOut('slow');
+          $('#encryption').fadeOut('slow');
         }
       });
     });
 
+  script.
+    function cmp() {
+      pwd = document.getElementById('pwd').value;
+      conf_pwd = document.getElementById('conf_pwd').value;
+      if (pwd == conf_pwd) {
+        document.getElementById('compare_result').innerHTML = "<font title=\"Consistent\">&#9989</font>";
+      }
+      else {
+        document.getElementById('compare_result').innerHTML = "<font title=\"Inconsistent\">&#10060</font>";
+      }
+    }
