@@ -1,5 +1,15 @@
 extends layout
 block content
+  style(type='text/css').
+    #submit {
+      cursor: pointer;
+    }
+
+    #submit:hover {
+      background-color: #4CAF50; /* Green */
+      color: white;
+    }
+
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
     h4.display-2(style='margin: auto; text-align: center; padding-bottom: 40px') Login
     .alert.alert-danger(role='alert', style=valid_hidden)
@@ -16,12 +26,12 @@ block content
       .form-group
         label(for='pwd') Password: 
         input#pwd.form-control(type='password', name='pwd', placeholder='password', required='')
-      .g-recaptcha(data-sitekey='6LfCufYUAAAAAMLrtvdHqxPdCijjHWImzHuolp8o')
+      .g-recaptcha(data-sitekey='6LfCufYUAAAAAMLrtvdHqxPdCijjHWImzHuolp8o', style='width:100%')
       .form-group
-        input.form-control(type='submit', name='submit', value='Submit')
+        input.form-control(type='submit', name='submit', value='Submit', id='submit', style='margin-top:10px')
       .form-group
-        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0')
-        input.btn.btn-primary(style='margin-left: 20px', type='button', value='New User?', onclick="window.location='register';")
+        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0; width: 45%')
+        input.btn.btn-primary(style='margin-left: 10%; width: 45%', type='button', value='New User?', onclick="window.location='register';")
 
   script(src='https://www.google.com/recaptcha/api.js', async='', defer='')
   script.
