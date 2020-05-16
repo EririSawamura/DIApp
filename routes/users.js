@@ -43,6 +43,7 @@ router.get('/view', function(req, res, next){
       var if_private = result[0].IF_PRIVATE? 'display:block': 'display:none';
       var alert = result[0].IF_PRIVATE? "The content is encrypted...Please enter password to decrypt":"";
       res.render('view', { title: 'View key pairs', 
+        sitename: result[0].sitename, 
         username: result[0].USERNAME, 
         password: result[0].PASSWORD, 
         if_private: if_private,
@@ -123,6 +124,7 @@ router.post('/view', function(req, res, next){
         result[0].PASSWORD = "*********";
       }
       res.render('view', { title: 'View key pairs', 
+        sitename: result[0].sitename, 
         username: result[0].USERNAME, 
         password: result[0].PASSWORD, 
         if_private: if_private,
@@ -190,7 +192,7 @@ function genWelmsg(name){
 }
 
 function genPwdlist(name, callback){
-  var list_sql = "SELECT key_id,  USERNAME, if_private FROM key_store WHERE owner = ? ORDER BY LAST_MODIFIED_TIME DESC;";
+  var list_sql = "SELECT key_id,  USERNAME, sitename, if_private FROM key_store WHERE owner = ? ORDER BY LAST_MODIFIED_TIME DESC;";
   connection.query(
     list_sql,[
       name
@@ -204,7 +206,7 @@ function genPwdlist(name, callback){
 }
 
 function getView(id, callback){
-  var view_sql = "SELECT USERNAME, PASSWORD, IF_PRIVATE FROM key_store WHERE key_id = ?;";
+  var view_sql = "SELECT USERNAME, PASSWORD, sitename, IF_PRIVATE FROM key_store WHERE key_id = ?;";
   connection.query(
     view_sql,[
       id
@@ -220,7 +222,7 @@ function getView(id, callback){
 function getDecryView(id, req, callback){
   var password = req.body.decrypt;
   console.log("password"+password);
-  var deView_sql = "SELECT USERNAME, CONVERT(AES_DECRYPT(FROM_BASE64(PASSWORD), ?, @init_vector) USING UTF8) AS PASSWORD, IF_PRIVATE FROM key_store WHERE key_id = ?;"
+  var deView_sql = "SELECT USERNAME, CONVERT(AES_DECRYPT(FROM_BASE64(PASSWORD), ?, @init_vector) USING UTF8) AS PASSWORD, sitename, IF_PRIVATE FROM key_store WHERE key_id = ?;"
   connection.query(
     deView_sql,[
       password,
@@ -237,12 +239,13 @@ function getDecryView(id, req, callback){
 function create_key(req, username, callback){
   if(req.body.if_private === 'on'){
     console.log("private");
-    var key_sql = "insert into key_store (username, password, OWNER, if_private, LAST_MODIFIED_TIME) values (?, TO_BASE64(AES_ENCRYPT(?,?, @init_vector)), ?, 1, now());"
+    var key_sql = "insert into key_store (username, password, sitename, OWNER, if_private, LAST_MODIFIED_TIME) values (?, TO_BASE64(AES_ENCRYPT(?,?, @init_vector)), ?, ?, 1, now());"
     connection.query(
       key_sql,[
         req.body.username,
         req.body.user_password,
         req.body.pwd,
+        req.body.sitename,
         username
       ],
       function (err) {
@@ -252,11 +255,12 @@ function create_key(req, username, callback){
       }
     );
   }else{
-    var key_sql = "insert into key_store (username, password, OWNER, if_private, LAST_MODIFIED_TIME) values (?, ?, ?, 0, now());"
+    var key_sql = "insert into key_store (username, password, sitename, OWNER, if_private, LAST_MODIFIED_TIME) values (?, ?, ?, ?, 0, now());"
     connection.query(
       key_sql,[
         req.body.username,
         req.body.user_password,
+        req.body.sitename,
         username
       ],
       function (err) {
@@ -271,12 +275,13 @@ function create_key(req, username, callback){
 function change_key(id, req, username, callback){
   if(req.body.if_private === 'on'){
     console.log("private");
-    var key_sql = "UPDATE key_store SET username=?, password=TO_BASE64(AES_ENCRYPT(?,?, @init_vector)), if_private=1, LAST_MODIFIED_TIME=now() WHERE key_id=?;"
+    var key_sql = "UPDATE key_store SET username=?, password=TO_BASE64(AES_ENCRYPT(?,?, @init_vector)), sitename=?, if_private=1, LAST_MODIFIED_TIME=now() WHERE key_id=?;"
     connection.query(
       key_sql,[
         req.body.username,
         req.body.user_password,
         req.body.pwd,
+        req.body.sitename,
         id
       ],
       function (err) {
@@ -286,11 +291,12 @@ function change_key(id, req, username, callback){
       }
     );
   }else{
-    var key_sql = "UPDATE key_store SET username=?, password=?, if_private=0, LAST_MODIFIED_TIME=now() WHERE key_id=?;"
+    var key_sql = "UPDATE key_store SET username=?, password=?, sitename=?, if_private=0, LAST_MODIFIED_TIME=now() WHERE key_id=?;"
     connection.query(
       key_sql,[
         req.body.username,
         req.body.user_password,
+        req.body.sitename,
         id
       ],
       function (err) {
