@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const qrcode = require('qrcode');
 var express = require('express');
 var router = express.Router();
 var date = new Date();
@@ -26,6 +27,7 @@ router.get('/', function(req, res, next) {
   }
 });
 router.get('/create_key', function(req, res, next) {
+  console.log('hello');
   if(req.cookies['username']){
     res.render('create_key', {title: 'Create new key pairs'});
   } else{

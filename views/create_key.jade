@@ -29,11 +29,11 @@ block content
         input#if_private.form-check-input(type='checkbox', name='if_private', checked='')
         label.form-check-label(for='if_private') Set content private
       
-      #encryption.row(style='padding-top:10px;')
+      #encryption.row(style='padding-top:10px;height:150px')
         .col-4
           #list-tab.list-group(role='tablist')
-            a#list-password-list.list-group-item.list-group-item-action.active(data-toggle='list', href='#list-password', role='tab', aria-controls='password') Password
-            a#list-profile-list.list-group-item.list-group-item-action(data-toggle='list', href='#list-profile', role='tab', aria-controls='profile') QR code
+            a#list-password-list.list-group-item.list-group-item-action.active(data-toggle='list', href='#list-password', role='tab', aria-controls='password' onclick='ClickPassword()') Password
+            a#list-profile-list.list-group-item.list-group-item-action(data-toggle='list', href='#list-profile', role='tab', aria-controls='profile', onclick='ClickQRCode()') QR code
         .col-8
           #nav-tabContent.tab-content
             #list-password.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='list-password-list')
@@ -44,15 +44,18 @@ block content
                 label(for='conf_pwd', style='width:43%') Confirmed password:
                 input#conf_pwd(type='password', name='conf_pwd', placeholder='Password', value='', required='', oninput='cmp()', style='width:45%')
                 font#compare_result(style='margin-left:15px')
-            #list-profile.tab-pane.fade(role='tabpanel', aria-labelledby='list-profile-list') ...
-
+            #list-profile.tab-pane.fade(role='tabpanel', aria-labelledby='list-profile-list')
+              canvas#canvas
+              div#qr_password(style='visibility:hidden')
 
       .form-group(style='padding-top:10px;')
         input.form-control(type='submit', name='submit', value='Submit', id='submit', onclick='return validate()')
       .form-group
         input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0; width: 45%')
         input.btn.btn-primary(style='margin-left: 10%; width: 45%', type='button', value='Cancel', onclick="window.location='/user';")
-  
+
+  script(src='../javascripts/bundle.js', type='text/javascript')
+
   script.
     $(document).ready(function(){
       $('#if_private').change(function(){
@@ -75,4 +78,23 @@ block content
       else {
         document.getElementById('compare_result').innerHTML = "<font title=\"Inconsistent\">&#10060</font>";
       }
+    }
+  
+  script.
+    function ClickQRCode() {
+      var password = document.getElementById("pwd");
+      var conf_password = document.getElementById("conf_pwd");
+      var pwd = document.getElementById('qr_password');
+      password.value = pwd.innerHTML;
+      conf_password.value = pwd.innerHTML;
+      console.log("OK!");
+    }
+
+  script.
+    function ClickPassword() {
+      var password = document.getElementById("pwd");
+      var conf_password = document.getElementById("conf_pwd");
+      password.value = '';
+      conf_password.value = '';
+      console.log("OK!");
     }
