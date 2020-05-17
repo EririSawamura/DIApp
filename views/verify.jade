@@ -11,7 +11,7 @@ block content
       #decryption.row(style='padding-top:10px;height:200px')
         .col-4
           #list-tab.list-group(role='tablist')
-            a#list-password-list.list-group-item.list-group-item-action.active(data-toggle='list', href='#list-password', role='tab', aria-controls='password') Password
+            a#list-password-list.list-group-item.list-group-item-action.active(data-toggle='list', href='#list-password', role='tab', aria-controls='password', onclick="clickOnPassword()") Password
             a#list-profile-list.list-group-item.list-group-item-action(data-toggle='list', href='#list-profile', role='tab', aria-controls='profile') QR code
         .col-8
           #nav-tabContent.tab-content
@@ -22,14 +22,15 @@ block content
             #list-profile.tab-pane.fade(role='tabpanel', aria-labelledby='list-profile-list')
               nav
                 #nav-tab.nav.nav-tabs(role='tablist')
-                  a#nav-home-tab.nav-item.nav-link.active(data-toggle='tab', href='#nav-home', role='tab', aria-controls='nav-home', aria-selected='true') Uploader
-                  a#nav-profile-tab.nav-item.nav-link(data-toggle='tab', href='#nav-profile', role='tab', aria-controls='nav-profile', aria-selected='false') Scanner
+                  a#nav-home-tab.nav-item.nav-link.active(data-toggle='tab', href='#nav-home', role='tab', aria-controls='nav-home', aria-selected='true', onclick="stopscanner()") Uploader
+                  a#nav-profile-tab.nav-item.nav-link(data-toggle='tab', href='#nav-profile', role='tab', aria-controls='nav-profile', aria-selected='false', onclick="startscanner()") Scanner
               #nav-tabContent.tab-content
                 #nav-home.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='nav-home-tab') 
                   input#qrcode_img(type='file', name='file', accept='.jpg, .png, .jpeg', onchange="openFile(event)", style="margin-top:10px")
                   img#output(style='height:100px; width:100px; visibility:hidden')
                 #nav-profile.tab-pane.fade(role='tabpanel', aria-labelledby='nav-profile-tab') 
                   video#preview(style="height:100px; margin-top:10px")
+                  img#scanner(style='height:100px; width:100px; visibility:hidden; margin-top:10px')
 
       .form-group
         input.form-control(type='submit', name='submit', value='Submit', id='submit')
@@ -39,22 +40,41 @@ block content
 
   script(type='text/javascript').
     let scanner = new Instascan.Scanner({ video: document.getElementById('preview'), backgroundScan: false, captureImage: true });
-    scanner.addListener('scan', function (content) {
-      console.log(content);
-      var password = document.getElementById("pwd");
-      password.value = content;
+    function startscanner() {
+      const img = document.getElementById('scanner');
+      img.style.visibility = "hidden";
+      $('#preview').fadeIn(0);
+
+      scanner.addListener('scan', function (content, image) {
+        console.log(content);
+        var password = document.getElementById("pwd");
+        password.value = content;  
+        img.src = image;
+        img.style.visibility = "visible";
+        $('#preview').fadeOut(0);
+        scanner.stop();
+      });      
+
+      Instascan.Camera.getCameras().then(function (cameras) {
+        if (cameras.length > 0) {
+          scanner.start(cameras[0]);
+        } else {
+          console.error('No cameras found.');
+        }
+      }).catch(function (e) {
+        console.error(e);
+      });
+    }
+
+    function stopscanner() {
       scanner.stop();
-    });
-    
-    Instascan.Camera.getCameras().then(function (cameras) {
-      if (cameras.length > 0) {
-        scanner.start(cameras[0]);
-      } else {
-        console.error('No cameras found.');
-      }
-    }).catch(function (e) {
-      console.error(e);
-    });
+    }
+
+    function clickOnPassword() {
+      var password = document.getElementById("pwd");
+      stopscanner();
+      password.value = ''; 
+    }
 
   script.
     var openFile = function(file) {
@@ -96,28 +116,3 @@ block content
         $('#preview').fadeIn('slow');
       }
     }
-
-    //- $(document).ready(function(){
-    //-   $('#option1').change(function(){
-    //-     console.log("option1 changes");
-    //-     if(this.checked){
-          
-    //-     }
-    //-     else{
-          
-          
-    //-     }
-    //-   });
-
-    //-   $('#option2').change(function(){
-    //-     console.log("option2 changes");
-    //-     if(this.checked){
-          
-    //-     }
-    //-     else{
-    //-       $('#preview').fadeOut('slow');
-    //-       var output = document.getElementById('output');
-    //-       output.style.visibility = "hidden";
-    //-     }
-    //-   });
-    //- });
