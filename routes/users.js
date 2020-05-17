@@ -60,7 +60,7 @@ router.get('/verify', function(req, res, next){
         var valid_hidden = req.query.valid === "fail"? "display:block": "display:none";
         res.render('verify', { title: 'Verify', valid_hidden: valid_hidden});
       } else{
-        res.render('change', { title: 'Change'});
+        res.redirect("/user/change?key_id="+key_id);
       }
     });
   } else{
@@ -240,6 +240,7 @@ function getSearchView(username, keyword, callback){
 
 function getDecryView(id, req, callback){
   var password = req.body.decrypt;
+
   var deView_sql = "SELECT USERNAME, CONVERT(AES_DECRYPT(FROM_BASE64(PASSWORD), ?, @init_vector) USING UTF8) AS PASSWORD, sitename, IF_PRIVATE FROM key_store WHERE key_id = ?;"
   connection.query(
     deView_sql,[
