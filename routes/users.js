@@ -27,7 +27,6 @@ router.get('/', function(req, res, next) {
   }
 });
 router.get('/create_key', function(req, res, next) {
-  console.log('hello');
   if(req.cookies['username']){
     res.render('create_key', {title: 'Create new key pairs'});
   } else{
@@ -38,10 +37,7 @@ router.get('/view', function(req, res, next){
   
   if(req.cookies['username']){
     var key_id = req.query.key_id;
-    console.log(key_id);
     getView(key_id, function(result){
-      console.log(result[0]);
-      console.log(result[0].USERNAME);
       var if_private = result[0].IF_PRIVATE? 'display:block': 'display:none';
       var alert = result[0].IF_PRIVATE? "The content is encrypted...Please enter password to decrypt":"";
       res.render('view', { title: 'View key pairs', 
@@ -59,10 +55,7 @@ router.get('/verify', function(req, res, next){
   
   if(req.cookies['username']){
     var key_id = req.query.key_id;
-    console.log(key_id);
     getView(key_id, function(result){
-      console.log(result[0]);
-      console.log(result[0].USERNAME);
       if(result[0].IF_PRIVATE){
         var valid_hidden = req.query.valid === "fail"? "display:block": "display:none";
         res.render('verify', { title: 'Verify', valid_hidden: valid_hidden});
@@ -95,8 +88,22 @@ router.post('/', function(req, res, next) {
   if(req.body.logout){
     res.clearCookie('username');
     res.redirect("login");
-  } else{
+  } else if(req.body.new_key){
     res.redirect('/user/create_key');
+  } else{
+    if(req.cookies['username']){
+      var msg = genWelmsg(req.cookies['username']);
+      var create_key_hidden = req.query.create_key === "success"? "display:block": "display:none";
+      var delete_key_hidden = req.query.delete_key === "success"? "display:block": "display:none";
+      var change_key_hidden = req.query.change_key === "success"? "display:block": "display:none";
+      var username = req.cookies['username'];
+      var keyword = req.body.search;
+      getSearchView(username, keyword, function(result){
+        res.render('user', { title: 'User', username: msg, result: result, create_key_hidden: create_key_hidden, delete_key_hidden: delete_key_hidden, change_key_hidden, change_key_hidden});
+      });
+    } else{
+      res.redirect('/login');
+    }
   }
 });
 router.post('/create_key', function(req, res, next){
@@ -117,9 +124,7 @@ router.post('/view', function(req, res, next){
     var key_id = req.query.key_id;
     var alert = "";
     var if_private = 'display:none';
-    console.log(key_id);
     getDecryView(key_id, req, function(result){
-      console.log(result[0]);
       if(result[0].PASSWORD === null){
         alert = "Decryption password is wrong...Please try again!";
         if_private = 'display:block';
@@ -139,7 +144,6 @@ router.post('/view', function(req, res, next){
 router.post('/verify', function(req, res, next){
   if(req.cookies['username']){
     var key_id = req.query.key_id;
-    console.log(key_id);
     getDecryView(key_id, req, function(result){
       if(result[0].PASSWORD === null){
         res.redirect("/user/verify?key_id="+key_id+"&valid=fail");
@@ -168,7 +172,6 @@ router.post('/change', function(req, res, next){
 router.post('/delete', function(req, res, next){
   if(req.cookies['username']){
     var key_id = req.query.key_id;
-    console.log(key_id);
     delete_key(key_id, req.cookies['username'], req, function(result){
       if(result){
         res.redirect("/user?delete_key=success");
@@ -180,7 +183,6 @@ router.post('/delete', function(req, res, next){
     res.redirect('/login');
   }
 });
-
 
 function genWelmsg(name){
   var hour = date.getHours();
@@ -221,9 +223,23 @@ function getView(id, callback){
   );
 }
 
+function getSearchView(username, keyword, callback){
+  var search_sql = "SELECT key_id,  USERNAME, sitename, if_private FROM key_store WHERE OWNER=? AND sitename LIKE CONCAT('%',?,'%') ORDER BY LAST_MODIFIED_TIME DESC;";
+  connection.query(
+    search_sql,[
+      username,
+      keyword,
+    ],
+    function (err, rows) {
+      if (err) throw err;
+    
+      return callback(rows);
+    }
+  );
+}
+
 function getDecryView(id, req, callback){
   var password = req.body.decrypt;
-  console.log("password"+password);
   var deView_sql = "SELECT USERNAME, CONVERT(AES_DECRYPT(FROM_BASE64(PASSWORD), ?, @init_vector) USING UTF8) AS PASSWORD, sitename, IF_PRIVATE FROM key_store WHERE key_id = ?;"
   connection.query(
     deView_sql,[
@@ -240,7 +256,6 @@ function getDecryView(id, req, callback){
 
 function create_key(req, username, callback){
   if(req.body.if_private === 'on'){
-    console.log("private");
     var key_sql = "insert into key_store (username, password, sitename, OWNER, if_private, LAST_MODIFIED_TIME) values (?, TO_BASE64(AES_ENCRYPT(?,?, @init_vector)), ?, ?, 1, now());"
     connection.query(
       key_sql,[
@@ -276,7 +291,6 @@ function create_key(req, username, callback){
 
 function change_key(id, req, username, callback){
   if(req.body.if_private === 'on'){
-    console.log("private");
     var key_sql = "UPDATE key_store SET username=?, password=TO_BASE64(AES_ENCRYPT(?,?, @init_vector)), sitename=?, if_private=1, LAST_MODIFIED_TIME=now() WHERE key_id=?;"
     connection.query(
       key_sql,[
@@ -321,7 +335,6 @@ function delete_key(id, username, req, callback){
       if (err) throw err;
       
       if(rows.length === 1){
-        console.log(req.body.pwd)
         bcrypt.compare(req.body.pwd, rows[0].password, function(err, result) {
           if(err) throw err;
           if(result){

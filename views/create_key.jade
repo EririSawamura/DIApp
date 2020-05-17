@@ -10,11 +10,11 @@ block content
         input#sitename.form-control(type='text', maxlength='45', name='sitename', required='')
       .input-group.mb-3
         .input-group-prepend
-          span#basic-addon3.input-group-text Title
+          span#basic-addon3.input-group-text Username
         input#username.form-control(type='text', maxlength='45', name='username', required='')
       .input-group.mb-3
         .input-group-prepend
-          span#basic-addon3.input-group-text Content
+          span#basic-addon3.input-group-text Password content
         input#user_password.form-control(type='text', maxlength='45', name='user_password', required='')
       .form-check
         input#if_private.form-check-input(type='checkbox', name='if_private', checked='')
@@ -38,6 +38,7 @@ block content
             #list-profile.tab-pane.fade(role='tabpanel', aria-labelledby='list-profile-list')
               canvas#canvas
               div#qr_password(style='visibility:hidden')
+        small#usrHelp.form-text.text-muted Please remember your decryption password or store your QR code carefully.
 
       .form-group(style='padding-top:10px;')
         input.form-control(type='submit', name='submit', value='Submit', id='submit', onclick='return validate()')
@@ -78,7 +79,6 @@ block content
       var pwd = document.getElementById('qr_password');
       password.value = pwd.innerHTML;
       conf_password.value = pwd.innerHTML;
-      console.log("OK!");
     }
 
   script.
@@ -87,5 +87,4 @@ block content
       var conf_password = document.getElementById("conf_pwd");
       password.value = '';
       conf_password.value = '';
-      console.log("OK!");
     }

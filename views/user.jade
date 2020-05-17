@@ -1,7 +1,7 @@
 extends layout
 block content
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
-    h4.display-3(style='margin: auto; text-align: center; padding-bottom: 40px')= username
+    h4.display-4(style='margin: auto; text-align: center; padding-bottom: 40px')= username
     .alert.alert-success(role='alert', style=create_key_hidden)
       strong Success Creation!
       |  You can view your key pairs now.
@@ -11,17 +11,21 @@ block content
     script.
     .alert.alert-success(role='alert', style=change_key_hidden)
       strong Change Successfully!
-    script.
-      var key_list = !{JSON.stringify(result)};
-      console.log(key_list);
-      for (var i=0; i<key_list.length; i+=1){
-        var lock = key_list[i].if_private? '🔒': '';
-        document.write("<li class='list-group-item' style='height: 50px;'><input class='btn btn-link' style='display: flex; margin-right: 20px; float: left' type='button' onClick=\"location.href='/user/view?key_id="+key_list[i].key_id+"'\" name=key_id:"+key_list[i].key_id+" id="+key_list[i].key_id+" value=\""+key_list[i].sitename+"  "+lock+"\"><input class='btn btn-danger' style='display: flex; width: 70px; height: 35px; float: right' value='Delete' type='button' onClick=\"location.href='/user/delete?key_id="+key_list[i].key_id+"'\"><input class='btn btn-warning' style='display: flex; width: 80px; height: 35px; margin-right: 10px; float: right' value='Change' type='button' onClick=\"location.href='/user/verify?key_id="+key_list[i].key_id+"'\"></li>");
-      }
+    form.px-4.py-3(method='post', style='padding-top: 100px')
+      .input-group.mb-3(style='margin-bottom: 20px')
+        input#search.form-control(type='text', placeholder='Search', name='search', aria-label='Search', aria-describedby='basic-addon2')
+        .input-group-append
+          button.btn.btn-outline-secondary(type='submit') 🔎
+      script.
+        var key_list = !{JSON.stringify(result)};
+        for (var i=0; i<key_list.length; i+=1){
+          var lock = key_list[i].if_private? '🔒': '';
+          document.write("<li class='list-group-item' style='height: 50px;'><input class='btn btn-link' style='display: flex; margin-right: 20px; float: left' type='button' onClick=\"location.href='/user/view?key_id="+key_list[i].key_id+"'\" name=key_id:"+key_list[i].key_id+" id="+key_list[i].key_id+" value=\""+key_list[i].sitename+"  "+lock+"\"><input class='btn btn-danger' style='display: flex; width: 70px; height: 35px; float: right' value='Delete' type='button' onClick=\"location.href='/user/delete?key_id="+key_list[i].key_id+"'\"><input class='btn btn-warning' style='display: flex; width: 80px; height: 35px; margin-right: 10px; float: right' value='Change' type='button' onClick=\"location.href='/user/verify?key_id="+key_list[i].key_id+"'\"></li>");
+        }
     form.px-4.py-3(method='post', style='padding-top: 100px')
       p#usrHelp.form-text.text-muted 🔒 means your note is private now.
       .form-group(style='align-items: center; justify-content:center; display: flex')
-        input#new_note.btn.btn-primary(style='display: flex; margin-right: 20px', type='submit', name='new key', value='New Key Pair')
+        input#new_key.btn.btn-primary(style='display: flex; margin-right: 20px', type='submit', name='new_key', value='New Key Pair')
         input#logout.btn.btn-danger(style='display: flex', type='submit', name='logout', value='Logout')
 
     

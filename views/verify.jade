@@ -46,7 +46,6 @@ block content
       $('#preview').fadeIn(0);
 
       scanner.addListener('scan', function (content, image) {
-        console.log(content);
         var password = document.getElementById("pwd");
         password.value = content;  
         img.src = image;
@@ -90,26 +89,20 @@ block content
       reader.readAsDataURL(input.files[0]);
       var password = document.getElementById("pwd");
       const codeReader = new ZXing.BrowserQRCodeReader();
-      console.log("Good! Good! "); 
       const img = document.getElementById('output'); 
       codeReader.decodeFromImage(img).then((result) => {
-        //- console.log(result['text']);
         password.value = result['text'];
-        //- document.getElementById('result').textContent = result.text
       }).catch((err) => {
         console.error(err);
-        //- document.getElementById('result').textContent = err
       });
     };
 
   script.
     function uploader() {
       if (document.getElementById('option1').checked) {
-        console.log("option1");
         $('#qrcode_img').fadeIn('slow');
         $('#preview').fadeOut('slow');
       } else {
-        console.log("option2");
         $('#qrcode_img').fadeOut('slow');
         var output = document.getElementById('output');
         output.style.visibility = "hidden";

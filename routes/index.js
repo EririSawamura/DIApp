@@ -50,7 +50,6 @@ router.post('/login', recaptcha.middleware.verify, function (req, res) {
   if (!req.recaptcha.error) {
     login(req, function(result){
       if(result){
-        console.log(result);
         res.cookie('username', req.body.username, {expire: 360000 + Date.now()});
         res.redirect("/user");
       } else{
@@ -58,7 +57,6 @@ router.post('/login', recaptcha.middleware.verify, function (req, res) {
       }
     });
   } else {
-    console.log(req.recaptcha.error);
     res.redirect("/login?valid=false");
   }
 });

@@ -2031,7 +2031,6 @@ canvas.style.height = 100;
 
 QRCode.toCanvas(canvas, str, function (error) {
   if (error) console.error(error);
-  console.log('success!');
 })
 },{"qrcode":6}],5:[function(require,module,exports){
 'use strict';

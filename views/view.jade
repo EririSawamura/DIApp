@@ -1,5 +1,7 @@
 extends layout
 block content
+	script(src='https://rawgit.com/schmich/instascan-builds/master/instascan.min.js', type='text/javascript')
+	script(type='text/javascript', src='https://unpkg.com/@zxing/library@latest')
 	div(style='align-content: center; align-items: center; justify-content: center; width: 700px; height: 1080px; padding-top: 100px; margin: auto')
 		h4(style='margin: auto; text-align: center; padding-bottom: 40px')= sitename
 		h4(style='margin: auto; text-align: center; padding-bottom: 40px')= username
@@ -8,12 +10,44 @@ block content
 		div(style=if_private)
 			form.px-4.py-3(method='post', style='padding-top: 100px')
 				.input-group.mb-3(style='margin-bottom: 20px')
-					input#decrypt.form-control(type='password', placeholder='Enter decryption password', name='decrypt', aria-label='decrypt', aria-describedby='basic-addon2', required='')
+					input#decrypt.form-control(type='password', placeholder='Enter decryption password', name='decrypt', aria-label='decrypt', aria-describedby='basic-addon2')
 					.input-group-append
 					button.btn.btn-outline-secondary(type='submit') Submit
+			nav
+				#nav-tab.nav.nav-tabs(role='tablist')
+					a#nav-profile-tab.nav-item.nav-link(data-toggle='tab', href='#nav-profile', role='tab', aria-controls='nav-profile', aria-selected='false', onclick="startscanner()") Scanner
+			#nav-tabContent.tab-content
+				#nav-profile.tab-pane.fade(role='tabpanel', aria-labelledby='nav-profile-tab') 
+					video#preview(style="height:100px; margin-top:10px")
+					img#scanner(style='height:100px; width:100px; visibility:hidden; margin-top:10px')
 		form.px-4.py-3( style='padding-top: 100px; margin: auto; align-content: center; align-items: center; justify-content: center; margin: auto; display: flex')
 			.form-group(style='align-items: center; justify-content:center; display: flex')
 				input#new_note.btn.btn-primary(style='display: flex;', type='button', name='new_key', value='New Key Pair', onclick="window.location='/user/create_key';")
 				input.btn.btn-primary(type='button', style='margin: auto; display: flex; margin-left:20px', value='Back', onclick="window.location='/login';")
 
+	script(type='text/javascript').
+		let scanner = new Instascan.Scanner({ video: document.getElementById('preview'), backgroundScan: false, captureImage: true });
+		function startscanner() {
+			const img = document.getElementById('scanner');
+			img.style.visibility = "hidden";
+			$('#preview').fadeIn(0);
 
+			scanner.addListener('scan', function (content, image) {
+				var password = document.getElementById("decrypt");
+				password.value = content;  
+				img.src = image;
+				img.style.visibility = "visible";
+				$('#preview').fadeOut(0);
+				scanner.stop();
+			});      
+
+			Instascan.Camera.getCameras().then(function (cameras) {
+				if (cameras.length > 0) {
+					scanner.start(cameras[0]);
+				} else {
+					console.error('No cameras found.');
+				}
+			}).catch(function (e) {
+				console.error(e);
+			});
+		}
