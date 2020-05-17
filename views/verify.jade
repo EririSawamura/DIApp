@@ -1,16 +1,73 @@
 extends layout
 block content
+  script(src='https://rawgit.com/schmich/instascan-builds/master/instascan.min.js', type='text/javascript')
+  script(type='text/javascript', src='https://unpkg.com/@zxing/library@latest')
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
     h4.display-2(style='margin: auto; text-align: center; padding-bottom: 40px') Verify
     .alert.alert-danger(role='alert', style=valid_hidden)
       strong Error!
       |  Your decryption password is wrong. Please try again.
     form.px-4.py-3(method='post', style='padding-top: 100px')
+      #decryption.row(style='padding-top:10px;height:150px')
+        .col-4
+          #list-tab.list-group(role='tablist')
+            a#list-password-list.list-group-item.list-group-item-action.active(data-toggle='list', href='#list-password', role='tab', aria-controls='password') Password
+            a#list-profile-list.list-group-item.list-group-item-action(data-toggle='list', href='#list-profile', role='tab', aria-controls='profile') QR code
+        .col-8
+          #nav-tabContent.tab-content
+            #list-password.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='list-password-list')
+              .form-group
+                label(for='pwd') Decryption Password: 
+                input#pwd.form-control(type='password', name='decrypt', placeholder='password', required='')
+            #list-profile.tab-pane.fade(role='tabpanel', aria-labelledby='list-profile-list')
+              input#qrcode_img(type='file', name='file', accept='.jpg, .png, .jpeg', onchange="openFile(event)")
+              img#output(style='height:100px; width:100px; visibility:hidden')
+              //- video#preview(style="height:100px")
+              
       .form-group
-        label(for='pwd') Decryption Password: 
-        input#pwd.form-control(type='password', name='decrypt', placeholder='password', required='')
+        input.form-control(type='submit', name='submit', value='Submit', id='submit')
       .form-group
-        input.form-control(type='submit', name='submit', value='Submit')
-      .form-group
-        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0')
-        input.btn.btn-primary(style='margin-left: 20px', type='button', value='Cancel', onclick="window.location='/user';")
+        input.btn.btn-primary(type='reset', name='reset', value='Reset', style='left: 0; width: 45%')
+        input.btn.btn-primary(style='margin-left: 10%; width: 45%', type='button', value='Cancel', onclick="window.location='/user';")
+
+  script(type='text/javascript').
+    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+    scanner.addListener('scan', function (content) {
+      console.log(content);
+    });
+    
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[0]);
+      } else {
+        console.error('No cameras found.');
+      }
+    }).catch(function (e) {
+      console.error(e);
+    });
+
+  script.
+    var openFile = function(file) {
+      var input = file.target;
+
+      var reader = new FileReader();
+      reader.onload = function(){
+        var dataURL = reader.result;
+        var output = document.getElementById('output');
+        output.src = dataURL;
+        output.style.visibility = "visible";
+      };
+      reader.readAsDataURL(input.files[0]);
+      var password = document.getElementById("pwd");
+      const codeReader = new ZXing.BrowserQRCodeReader();
+      console.log("Good! Good! "); 
+      const img = document.getElementById('output'); 
+      codeReader.decodeFromImage(img).then((result) => {
+        //- console.log(result['text']);
+        password.value = result['text'];
+        //- document.getElementById('result').textContent = result.text
+      }).catch((err) => {
+        console.error(err);
+        //- document.getElementById('result').textContent = err
+      });
+    };
