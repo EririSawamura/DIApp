@@ -10,6 +10,7 @@ To start app, use
 "npm install bcrypt"
 "npm install express-recaptcha --save"
 "npm install --save qrcode"
+"npm install vue-qrcode-reader"
 
 In Mysql, you need to set
 SET @@session.block_encryption_mode="aes-128-cbc";
