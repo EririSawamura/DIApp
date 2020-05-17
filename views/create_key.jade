@@ -1,14 +1,5 @@
 extends layout
 block content
-  style(type='text/css').
-    #submit {
-      cursor: pointer;
-    }
-
-    #submit:hover {
-      background-color: #4CAF50; /* Green */
-      color: white;
-    }
 
   div(style='align-content: center; width: 640px; height: 480px; padding-top: 100px; margin: auto')
     h4.display-3(style='margin: auto; text-align: center; padding-bottom: 40px') New key
@@ -38,7 +29,7 @@ block content
           #nav-tabContent.tab-content
             #list-password.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='list-password-list')
               #password.form-group(style='padding-top:5px;')
-                label(for='pwd', style='width:43%') Decrypted password:
+                label(for='pwd', style='width:43%') Decryption password:
                 input#pwd(type='password', name='pwd', placeholder='Password', value='', required='', style='width:45%')
               #con_password.form-group
                 label(for='conf_pwd', style='width:43%') Confirmed password:
