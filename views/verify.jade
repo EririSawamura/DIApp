@@ -8,7 +8,7 @@ block content
       strong Error!
       |  Your decryption password is wrong. Please try again.
     form.px-4.py-3(method='post', style='padding-top: 100px')
-      #decryption.row(style='padding-top:10px;height:150px')
+      #decryption.row(style='padding-top:10px;height:200px')
         .col-4
           #list-tab.list-group(role='tablist')
             a#list-password-list.list-group-item.list-group-item-action.active(data-toggle='list', href='#list-password', role='tab', aria-controls='password') Password
@@ -20,10 +20,17 @@ block content
                 label(for='pwd') Decryption Password: 
                 input#pwd.form-control(type='password', name='decrypt', placeholder='password', required='')
             #list-profile.tab-pane.fade(role='tabpanel', aria-labelledby='list-profile-list')
-              input#qrcode_img(type='file', name='file', accept='.jpg, .png, .jpeg', onchange="openFile(event)")
-              img#output(style='height:100px; width:100px; visibility:hidden')
-              //- video#preview(style="height:100px")
-              
+              nav
+                #nav-tab.nav.nav-tabs(role='tablist')
+                  a#nav-home-tab.nav-item.nav-link.active(data-toggle='tab', href='#nav-home', role='tab', aria-controls='nav-home', aria-selected='true') Uploader
+                  a#nav-profile-tab.nav-item.nav-link(data-toggle='tab', href='#nav-profile', role='tab', aria-controls='nav-profile', aria-selected='false') Scanner
+              #nav-tabContent.tab-content
+                #nav-home.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='nav-home-tab') 
+                  input#qrcode_img(type='file', name='file', accept='.jpg, .png, .jpeg', onchange="openFile(event)", style="margin-top:10px")
+                  img#output(style='height:100px; width:100px; visibility:hidden')
+                #nav-profile.tab-pane.fade(role='tabpanel', aria-labelledby='nav-profile-tab') 
+                  video#preview(style="height:100px; margin-top:10px")
+
       .form-group
         input.form-control(type='submit', name='submit', value='Submit', id='submit')
       .form-group
@@ -31,9 +38,12 @@ block content
         input.btn.btn-primary(style='margin-left: 10%; width: 45%', type='button', value='Cancel', onclick="window.location='/user';")
 
   script(type='text/javascript').
-    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+    let scanner = new Instascan.Scanner({ video: document.getElementById('preview'), backgroundScan: false, captureImage: true });
     scanner.addListener('scan', function (content) {
       console.log(content);
+      var password = document.getElementById("pwd");
+      password.value = content;
+      scanner.stop();
     });
     
     Instascan.Camera.getCameras().then(function (cameras) {
@@ -71,3 +81,43 @@ block content
         //- document.getElementById('result').textContent = err
       });
     };
+
+  script.
+    function uploader() {
+      if (document.getElementById('option1').checked) {
+        console.log("option1");
+        $('#qrcode_img').fadeIn('slow');
+        $('#preview').fadeOut('slow');
+      } else {
+        console.log("option2");
+        $('#qrcode_img').fadeOut('slow');
+        var output = document.getElementById('output');
+        output.style.visibility = "hidden";
+        $('#preview').fadeIn('slow');
+      }
+    }
+
+    //- $(document).ready(function(){
+    //-   $('#option1').change(function(){
+    //-     console.log("option1 changes");
+    //-     if(this.checked){
+          
+    //-     }
+    //-     else{
+          
+          
+    //-     }
+    //-   });
+
+    //-   $('#option2').change(function(){
+    //-     console.log("option2 changes");
+    //-     if(this.checked){
+          
+    //-     }
+    //-     else{
+    //-       $('#preview').fadeOut('slow');
+    //-       var output = document.getElementById('output');
+    //-       output.style.visibility = "hidden";
+    //-     }
+    //-   });
+    //- });
