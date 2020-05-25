@@ -47,3 +47,4 @@ DIApp uses the MySQL database. To create the database, developers need to execut
 Moreover, developers need to apply their MySQL connection configuration to the express.js code inside the {project_folder}/routes/users.js and {project_folder}/routes/index.js. Developers need to change the MySQL connection configuration to their setup. The default connection configuration is shown here.
 
 After all configuration, Users need to type localhost:3000/login to go to the login page.
+Enjoy!
