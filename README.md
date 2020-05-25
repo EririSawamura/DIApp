@@ -24,16 +24,22 @@ One of the reasons to choose MySQL database is that it supports AES-128-CBC encr
 ●	SQL injection prevention
 To prevent SQL injection, one way is to tweak the code so any user input is automatically escaped before executed. With MySQL and express.js, DIApp can specify which user inputs get escaped within the query() method itself. The specific method is named placeholders. Named placeholders map values in the array to placeholders in the same order as they are passed. The attribute names inside the object become the placeholders in the SQL query.
 
-#Application installation guide
-DIApp requires express js, node js, vue.js. They need to be installed before the start. 
+# Application installation guide
+DIApp requires express js, node js, vue.js. They need to be installed before the start.
+
 ●	express.js: https://expressjs.com/en/starter/installing.html
+
 ●	node.js: https://nodejs.org/en/download/
+
 ●	Vue.js: https://vuejs.org/v2/guide/installation.html
 
 Also, some modules are needed to install. They can be installed in the terminal.
 ●	{project_folder}> npm install bcrypt
+
 ●	{project_folder}> npm install express-recaptcha --save
+
 ●	{project_folder}> npm install --save qrcode
+
 ●	{project_folder}> npm install node-pre-gyp
 
 DIApp uses the MySQL database. To create the database, developers need to execute a config.sql file inside the folder.
