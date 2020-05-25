@@ -1,10 +1,10 @@
 # DIApp
 DIApp is a digital identity management website. Through the website, users can store unlimited username/password key pairs for different websites or systems. For some important key pairs, users can also choose to set an encryption password to encrypt the key pairs.
 
+# App feature
 ●	Register/Login
 To get started with DIApp, the first thing is to register an account. Username is unique. The login page supports Google reCAPTCHA which protects the website from spam and abuse. After logging in, the users will be redirected to the main page, where users can retrieve all the key pairs they have stored.
 
-# App feature
 ●	Create, update, and delete key pairs
 In DIApp, users can create, update, and delete key pairs as they like. When creating a new key pair, users should choose to set the key pair private or not. To set the key pairs private, users need to provide a private key to encrypt the password content. If a key pair is not set as private, when users click this key pair on the main page, all the information about this key pair will be presented in plain text on the view page. If a key pair is private, when users click this key pair on the main page, the encrypted password will be presented on the view page, and users are required to input the corresponding private key to decrypt the content.
 
